@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model ="clr-namespace:ToDoList.Models"
+             xmlns:vm="clr-namespace:ToDoList.ViewModels"
+             xmlns:android ="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls"
+             xmlns:converters ="clr-namespace:ToDoList.Converters"
+             x:DataType="vm:DetailPageViewModel"
+             x:Class="ToDoList.Views.DetailsPage"            
+             Title="{Binding Title}">
+    <ContentPage.Resources>
+        <converters:DeadlineConverter x:Key="DeadlineConverter"/>
+    </ContentPage.Resources>
+
+    <CollectionView ItemsSource="{Binding Tasks}"
+                    Margin="20">
+        <CollectionView.ItemsLayout>
+            <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+        </CollectionView.ItemsLayout>
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="model:MyTask">
+                <SwipeView android:SwipeView.SwipeTransitionMode="Reveal">
+                    <SwipeView.RightItems>
+
+                        <SwipeItem Text="Удалить"                                   
+                                       BackgroundColor="Red" 
+                                       IconImageSource="deletebtn.png"                                       
+                                       Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DetailPageViewModel}}, Path=DeleteTaskCommand}"
+                                       CommandParameter="{Binding .}">
+                        </SwipeItem>
+                        <SwipeItem Text="Редактировать"                                   
+                               BackgroundColor="Orange" 
+                               IconImageSource="editbtn.png"                                       
+                               Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DetailPageViewModel}}, Path=EditTaskCommand}"
+                               CommandParameter="{Binding .}">
+                        </SwipeItem>
+
+                    </SwipeView.RightItems>
+                    <Border HeightRequest="150"
+                            WidthRequest="350">
+                        <Grid RowDefinitions="auto,auto,*"
+                                      ColumnDefinitions="*,*"
+                                      Padding="15">
+                            <Label Text="{Binding Description}"
+                                   FontSize="Title"
+                                   Grid.ColumnSpan="2"/>
+                            <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,5" ColumnDefinitions="*,*">
+                                <Label         
+                                   Text="{Binding TaskDate, StringFormat='{0:dd.MM.yyyy}, {0:HH:mm}'}"
+                                   FontSize="Small"/>
+                                <Label Grid.Column="1" Text="Завершено" HorizontalTextAlignment="End" TextColor="Green" IsVisible="{Binding IsCompleted}"/>
+                                <Label Grid.Column="1" Text="Просрочено" HorizontalTextAlignment="End" TextColor="Red" IsVisible="False">
+                                    <Label.Triggers>
+                                        <MultiTrigger TargetType="Label">
+                                            <MultiTrigger.Conditions>
+                                                <BindingCondition Binding="{Binding IsCompleted}" Value="false"/>
+                                                <BindingCondition Binding="{Binding TaskDate, Converter={StaticResource DeadlineConverter}}" Value="true"/>
+                                            </MultiTrigger.Conditions>
+                                            <Setter Property="IsVisible" Value="True"/>
+                                        </MultiTrigger>
+                                        <!--<DataTrigger TargetType="Label" Binding="{Binding IsCompleted}" Value="false">
+                                            <Setter Property="IsVisible" Value="True"/>
+                                        </DataTrigger>-->
+                                    </Label.Triggers>
+                                </Label>
+                            </Grid>
+
+                            <HorizontalStackLayout Grid.Row="2"
+                                                   VerticalOptions="EndAndExpand">
+                                <Image Source="reminder.png"
+                                       Aspect="AspectFill"                                       
+                                       HeightRequest="25"
+                                       WidthRequest="25"
+                                       />
+                                <Label Text=":"/>
+                                <Label Text="{Binding TaskReminderInterval}"/>
+
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout Grid.Row="2"
+                                    Grid.Column="2"
+                                                   VerticalOptions="EndAndExpand">
+                                <Image Source="repeat.png"
+                                    Aspect="AspectFill"                                   
+                                    HeightRequest="25"
+                                    WidthRequest="25"
+                                    />
+                                <Label Text=":"/>
+                                <Label Text="{Binding TaskRepeatInterval}"/>
+
+                            </HorizontalStackLayout>
+                        </Grid>
+                        <FlyoutBase.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="Удалить"                                               
+                                                IconImageSource="deletebtn.png"     
+                                                CommandParameter="{Binding .}"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DetailPageViewModel}}, Path=DeleteTaskCommand}"
+                                    />
+                                <MenuFlyoutItem Text="Редактировать"
+                                                 IconImageSource="editbtn.png"     
+                                                 CommandParameter="{Binding .}"
+                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DetailPageViewModel}}, Path=EditTaskCommand}"
+                                    />
+                            </MenuFlyout>
+                        </FlyoutBase.ContextFlyout>
+                    </Border>
+                </SwipeView>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+
+</ContentPage>

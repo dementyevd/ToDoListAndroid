@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel ="clr-namespace:ToDoList.ViewModels"
+             xmlns:model ="clr-namespace:ToDoList.Models"
+             x:DataType="viewmodel:TaskViewModel"
+             Title="{Binding Title}"
+             x:Class="ToDoList.MainPage">  
+    <Grid RowDefinitions="auto,auto,*"
+          ColumnDefinitions="*,*"
+          RowSpacing="20"
+          ColumnSpacing="20"
+          Margin="20">        
+        <Border Grid.Row="0" Grid.Column="0">
+            <Grid RowDefinitions="auto,*"
+                  ColumnDefinitions="auto,*"                  
+                  Margin="15">     
+                
+                <Image Source="today.png" Aspect="AspectFill"/>   
+                <Label Grid.Row="0" Grid.Column="1" Text="{Binding TodayTasks.Count}"
+                       HorizontalTextAlignment="End" VerticalTextAlignment="Center"
+                       FontSize="32"
+                       TextColor="Red"/>
+                <Label Grid.Row="1" Grid.ColumnSpan="2" Text="Сегодня"
+                       VerticalTextAlignment="Center"
+                       FontSize="Medium" InputTransparent="True"/>
+            </Grid>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding GoToTasksCommand}" CommandParameter="{Binding TodayTasks}"/>
+            </Border.GestureRecognizers>
+        </Border>
+
+        <Border Grid.Row="0" Grid.Column="1">
+            <Grid RowDefinitions="auto,*"
+                   ColumnDefinitions="auto,*"                   
+                   Margin="15">
+                <Image Source="plan.png" Aspect="AspectFill"/>               
+                <Label Grid.Row="0" Grid.Column="1" Text="{Binding FutureTasks.Count}"
+                        HorizontalTextAlignment="End" VerticalTextAlignment="Center"
+                        FontSize="32"
+                       TextColor="Blue"/>
+                <Label Grid.Row="1" Grid.ColumnSpan="2" Text="В планах"
+                        VerticalTextAlignment="Center"
+                        FontSize="Medium" InputTransparent="True"/>
+            </Grid>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer CommandParameter="{Binding FutureTasks}" Command="{Binding GoToTasksCommand}"/>
+            </Border.GestureRecognizers>
+        </Border>
+
+        <Border Grid.Row="1" Grid.Column="0">
+            <Grid RowDefinitions="auto,*"
+           ColumnDefinitions="auto,*"           
+           Margin="15">
+                <Image Source="all.png" Aspect="AspectFill"/>
+                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Tasks.Count}"
+                HorizontalTextAlignment="End" VerticalTextAlignment="Center"
+                FontSize="32"/>
+                <Label Grid.Row="1" Grid.ColumnSpan="2" Text="Все"
+                VerticalTextAlignment="Center"
+                FontSize="Medium" InputTransparent="True"/>
+            </Grid>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer CommandParameter="{Binding Tasks}" Command="{Binding GoToTasksCommand}"/>
+            </Border.GestureRecognizers>
+        </Border>
+
+        <Border Grid.Row="1" Grid.Column="1">
+            <Grid RowDefinitions="auto,*"
+               ColumnDefinitions="auto,*"              
+               Margin="15">
+                <Image Source="checked.png" Aspect="AspectFill"/>
+                <Label Grid.Row="0" Grid.Column="1" Text="{Binding CompletedTasks.Count}"
+                HorizontalTextAlignment="End" VerticalTextAlignment="Center"
+                FontSize="32"
+                       TextColor="DarkGreen"/>
+                <Label Grid.Row="1" Grid.ColumnSpan="2" Text="Завершено"
+                VerticalTextAlignment="Center"
+                FontSize="Medium" InputTransparent="True"/>
+            </Grid>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer CommandParameter="{Binding CompletedTasks}" Command="{Binding GoToTasksCommand}"/>
+            </Border.GestureRecognizers>
+        </Border>
+
+        <Button Grid.Row="2" 
+                Grid.ColumnSpan="2"
+                VerticalOptions="End"
+                Text="Новое напоминание"
+                Margin="15"
+                WidthRequest="200"
+                IsEnabled="{Binding IsNotBusy}"
+                Command="{Binding GoToAddTaskPageCommand}"
+         />
+
+        <ActivityIndicator IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalOptions="CenterAndExpand"
+                           Grid.RowSpan="2"
+                           Grid.ColumnSpan="2"/>        
+
+    </Grid>   
+</ContentPage>
